@@ -1,5 +1,7 @@
 package com.jiangli.finance
 
+import com.jiangli.finance.ui.UIWindow
+
 /**
  *
  *
@@ -7,5 +9,5 @@ package com.jiangli.finance
  * @date 2018/3/10 20:26
  */
 fun main(args: Array<String>) {
-    println("aaaa")
+    UIWindow("财务小工具")
 }

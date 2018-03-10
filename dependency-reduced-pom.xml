@@ -49,7 +49,7 @@
                   <resource>META-INF/spring.schemas</resource>
                 </transformer>
                 <transformer>
-                  <mainClass>com.jiangli.finance.MyTestKt</mainClass>
+                  <mainClass>com.jiangli.finance.MainRunnerKt</mainClass>
                 </transformer>
               </transformers>
             </configuration>
