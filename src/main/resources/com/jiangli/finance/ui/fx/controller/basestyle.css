@@ -1,0 +1,7 @@
+.validate-error{
+    /*-fx-background-color: #ff3a11;*/
+    /*-fx-text-fill: white;*/
+    -fx-border-color:  #ff6f30;
+    /*-fx-opacity:  0.5;*/
+    /*-fx-effect: dropshadow( one-pass-box , rgb(0, 0, 0, 0.6), 0, 0.0 , 0 , 1 );*/
+}

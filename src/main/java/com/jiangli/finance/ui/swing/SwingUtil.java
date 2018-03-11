@@ -1,4 +1,4 @@
-package com.jiangli.finance.ui;
+package com.jiangli.finance.ui.swing;
 
 import javax.swing.*;
 import java.awt.*;
