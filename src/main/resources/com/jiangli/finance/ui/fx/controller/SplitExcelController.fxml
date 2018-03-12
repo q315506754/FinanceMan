@@ -43,10 +43,12 @@
                                </GridPane>
                             </children>
                          </VBox>
-                        <HBox fx:id="msgArea" alignment="CENTER" layoutX="6.0" layoutY="246.0" prefHeight="54.0" prefWidth="600.0">
+                        <VBox fx:id="msgArea" alignment="CENTER" layoutX="6.0" layoutY="246.0" prefHeight="54.0" prefWidth="600.0">
                            <children>
-                              <!--<Label  alignment="CENTER" prefHeight="71.0" prefWidth="600.0" />-->
-                           </children></HBox>
+                              <Label  text="帮助：“输入文件”会根据配置的列分组生成多个excel文件，在“输出目录”能找到这些文件" alignment="CENTER" prefHeight="71.0" prefWidth="600.0" />
+                              <Label  text="不会对“输入文件”造成影响" alignment="CENTER" prefHeight="71.0" prefWidth="600.0" />
+                           </children>
+                        </VBox>
                         <HBox alignment="CENTER" layoutX="35.0" layoutY="291.0" prefHeight="61.0" prefWidth="525.0" spacing="5.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="35.0" AnchorPane.rightAnchor="40.0">
                            <children>
                               <Button fx:id="splitBtn" mnemonicParsing="false" onAction="#splitExcel" prefHeight="60.0" prefWidth="114.0" text="分割" />

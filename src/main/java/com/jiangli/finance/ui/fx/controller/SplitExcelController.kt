@@ -7,9 +7,8 @@ import javafx.scene.control.ProgressIndicator
 import javafx.scene.control.Spinner
 import javafx.scene.control.TextField
 import javafx.scene.layout.GridPane
-import javafx.scene.layout.HBox
 import javafx.scene.layout.Pane
-
+import javafx.scene.layout.VBox
 
 
 /**
@@ -29,7 +28,7 @@ class SplitExcelController : BaseController() {
     lateinit internal var inputGridPane: GridPane
 
     @FXML
-    lateinit internal var msgArea: HBox
+    lateinit internal var msgArea: VBox
 
     @FXML
     lateinit internal var splitBtn: Button
