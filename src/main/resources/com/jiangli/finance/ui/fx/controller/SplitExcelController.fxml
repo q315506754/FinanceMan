@@ -1,20 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 <?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.control.ComboBox?>
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.jiangli.finance.ui.fx.controller.SplitExcelController">
    <children>
-      <TabPane layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane fx:id="tabPane" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" >
         <tabs>
-          <Tab text="分割excel">
+          <Tab text="分割excel" >
                <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="600.0">
                      <children>
                          <VBox alignment="CENTER" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="25.0">
                             <children>
-                                <GridPane fx:id="inputGridPane" alignment="CENTER" hgap="15.0" prefHeight="183.0" prefWidth="561.0" vgap="15.0">
+                                <GridPane fx:id="split_inputGridPane" alignment="CENTER" hgap="15.0" prefHeight="183.0" prefWidth="561.0" vgap="15.0">
                                  <columnConstraints>
                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -30,12 +42,12 @@
                                      <Label text="待拆分的列序号" GridPane.rowIndex="1" />
                                      <Label text="开始行序号" GridPane.rowIndex="2" />
                                      <Label text="选择输出目录" GridPane.rowIndex="3" />
-                                    <TextField fx:id="inputPath" maxWidth="214.0" prefHeight="23.0" prefWidth="214.0" GridPane.columnIndex="1" />
+                                    <TextField fx:id="split_inputPath" maxWidth="214.0" prefHeight="23.0" prefWidth="214.0" GridPane.columnIndex="1" />
                                     <!--<TextField text="1" GridPane.columnIndex="1" GridPane.rowIndex="1" />-->
                                     <!--<TextField text="2" GridPane.columnIndex="1" GridPane.rowIndex="2" />-->
-                                    <TextField fx:id="outputPath" layoutX="298.0" layoutY="16.0" maxWidth="214.0" prefHeight="23.0" prefWidth="214.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                    <Button mnemonicParsing="false" onAction="#chooseInput" text="选择" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
-                                    <Button layoutX="515.0" layoutY="16.0" mnemonicParsing="false" onAction="#chooseOutput" text="选择" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+                                    <TextField fx:id="split_outputPath" layoutX="298.0" layoutY="16.0" maxWidth="214.0" prefHeight="23.0" prefWidth="214.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                    <Button mnemonicParsing="false" onAction="#chooseInputSplit" text="选择" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
+                                    <Button layoutX="515.0" layoutY="16.0" mnemonicParsing="false" onAction="#chooseOutputSplit" text="选择" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
                                   </children>
                                  <VBox.margin>
                                     <Insets />
@@ -43,15 +55,15 @@
                                </GridPane>
                             </children>
                          </VBox>
-                        <VBox fx:id="msgArea" alignment="CENTER" layoutX="6.0" layoutY="246.0" prefHeight="54.0" prefWidth="600.0">
+                        <VBox fx:id="split_msgArea" alignment="CENTER" layoutX="6.0" layoutY="246.0" prefHeight="54.0" prefWidth="600.0">
                            <children>
-                              <Label  text="帮助：“输入文件”会根据配置的列分组生成多个excel文件，在“输出目录”能找到这些文件" alignment="CENTER" prefHeight="71.0" prefWidth="600.0" />
-                              <Label  text="不会对“输入文件”造成影响" alignment="CENTER" prefHeight="71.0" prefWidth="600.0" />
+                              <Label alignment="CENTER" prefHeight="71.0" prefWidth="600.0" text="帮助：“输入文件”会根据配置的列分组生成多个excel文件，在“输出目录”能找到这些文件" />
+                              <Label alignment="CENTER" prefHeight="71.0" prefWidth="600.0" text="不会对“输入文件”造成影响" />
                            </children>
                         </VBox>
                         <HBox alignment="CENTER" layoutX="35.0" layoutY="291.0" prefHeight="61.0" prefWidth="525.0" spacing="5.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="35.0" AnchorPane.rightAnchor="40.0">
                            <children>
-                              <Button fx:id="splitBtn" mnemonicParsing="false" onAction="#splitExcel" prefHeight="60.0" prefWidth="114.0" text="分割" />
+                              <Button fx:id="split_btn" mnemonicParsing="false" onAction="#splitExcel" prefHeight="60.0" prefWidth="114.0" text="分割" />
                            </children>
                         </HBox>
                      </children>
@@ -61,6 +73,49 @@
           <Tab text="合并excel">
             <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                </AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="列比对">
+            <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                    <VBox alignment="CENTER" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="25.0">
+                        <children>
+                            <GridPane fx:id="colcmp_inputGridPane" alignment="CENTER" hgap="15.0" prefHeight="183.0" prefWidth="561.0" vgap="15.0">
+                                <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                <children>
+                                    <Label prefHeight="15.0" prefWidth="104.0" text="选择输入文件" />
+                                    <Label text="请选择sheet" GridPane.rowIndex="1" />
+                                    <TextField fx:id="colcmp_inputPath" maxWidth="214.0" prefHeight="23.0" prefWidth="214.0" GridPane.columnIndex="1" />
+                                    <!--<TextField text="1" GridPane.columnIndex="1" GridPane.rowIndex="1" />-->
+                                    <!--<TextField text="2" GridPane.columnIndex="1" GridPane.rowIndex="2" />-->
+                                    <Button mnemonicParsing="false" onAction="#chooseInputColCmp" text="选择" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
+                                    <ComboBox fx:id="colcmp_sheetChooseList" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                </children>
+                                <VBox.margin>
+                                    <Insets />
+                                </VBox.margin>
+                            </GridPane>
+                        </children>
+                    </VBox>
+                    <VBox fx:id="colcmp_msgArea" alignment="CENTER" layoutX="6.0" layoutY="246.0" prefHeight="54.0" prefWidth="600.0">
+                        <children>
+                        </children>
+                    </VBox>
+                    <HBox alignment="CENTER" layoutX="35.0" layoutY="291.0" prefHeight="61.0" prefWidth="525.0" spacing="5.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="35.0" AnchorPane.rightAnchor="40.0">
+                        <children>
+                            <Button fx:id="colcmp_btn" mnemonicParsing="false" onAction="#colCmpExcel" prefHeight="60.0" prefWidth="114.0" text="比对" />
+                        </children>
+                    </HBox>
                 </AnchorPane>
             </content>
           </Tab>

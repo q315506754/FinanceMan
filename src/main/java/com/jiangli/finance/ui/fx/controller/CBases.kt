@@ -22,9 +22,21 @@ class CBases
 
 open class BaseController:AnchorPane() {
     lateinit var page:Pane
+    val errorCls = "validate-error"
 
     open fun processPage(page:Pane) {
         this.page = page
+    }
+
+    fun validateNotEmpty(textField: TextField) {
+        textField.styleClass.remove(errorCls)
+        if (isEmpty(textField.text)) {
+            textField.styleClass.add(errorCls)
+            textField.promptText = "不能为空"
+//            textField.addEventFilter(Focus)
+            //            inputPath.isFocused = true
+            throw Exception()
+        }
     }
 
 }

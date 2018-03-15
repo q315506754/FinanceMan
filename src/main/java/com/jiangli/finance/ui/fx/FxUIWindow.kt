@@ -25,6 +25,7 @@ class FxUIWindow : Application(){
 
         //default action
         replaceSceneContent("SplitExcelController.fxml")
+//        replaceSceneContent("MainTab.fxml")
 
 
         primaryStage.show()
