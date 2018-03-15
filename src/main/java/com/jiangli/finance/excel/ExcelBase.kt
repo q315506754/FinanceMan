@@ -5,6 +5,7 @@ import org.apache.poi.ss.util.NumberToTextConverter
 import org.apache.poi.xssf.usermodel.XSSFCell
 import org.apache.poi.xssf.usermodel.XSSFRow
 import org.apache.poi.xssf.usermodel.XSSFSheet
+import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import java.io.*
 import java.text.SimpleDateFormat
 
@@ -128,6 +129,19 @@ object FUtil {
         }
         return file
     }
+    fun files(str: String): List<File> {
+        val file = File(str)
+        if (!file.exists()) {
+            throw InterruptException(ExCode.NO_SUCH_FILE)
+        }
+        val mutableListOf = mutableListOf<File>()
+        if (!file.isDirectory()) {
+            mutableListOf.add(file)
+        }else {
+            mutableListOf.addAll(files(file.absolutePath))
+        }
+        return mutableListOf
+    }
     fun dir(str: String): File {
         val file = File(str)
         if (!file.exists()) {
@@ -142,21 +156,67 @@ object FUtil {
     }
 }
 
-object ExcelUtil{
+object ExcelUtil {
     val MAX_COL = 255
 
-    fun maxSheetRowIdx(sheet: XSSFSheet?,colMAX:Int=MAX_COL):Int {
+    fun process(inputSrc:String, sheetIdx:Int=0, fc:(file: File, workbook: XSSFWorkbook, sheet:XSSFSheet)->Unit) {
+        val files = FUtil.files(inputSrc)
+
+        files.filter { it.name.endsWith(".xlsx") }.forEach {
+            val fileInputStream = FileInputStream(it)
+            val workbook = XSSFWorkbook(fileInputStream)
+            val sheet1 = workbook.getSheetAt(sheetIdx)
+            fc(it,workbook,sheet1)
+
+            fileInputStream.close()
+        }
+
+    }
+
+    fun processRow(inputSrc:String, sheetIdx:Int=0, startRow:Int=0, fc:(file: File, workbook: XSSFWorkbook, sheet:XSSFSheet, lastRowIdx:Int, lastColIdx:Int, rowIdx:Int, row:XSSFRow?)->Unit) {
+        process(inputSrc, sheetIdx){
+            file, workbook, sheet1 ->
+
+            var lastColNum = ExcelUtil.maxSheetColIdx(sheet1)
+            var lastRowNum = ExcelUtil.maxSheetRowIdx(sheet1,lastColNum)
+
+            if (startRow > lastRowNum) {
+                throw InterruptException(ExCode.NUM_ROW_OVERFLOW,startRow+1,lastRowNum+1)
+            }
+
+            (startRow..lastRowNum).forEach {
+                val row = sheet1.getRow(it)
+                fc(file, workbook, sheet1,lastRowNum,lastColNum,it,row)
+            }
+        }
+    }
+
+    fun processRowCell(inputSrc:String, sheetIdx:Int=0, startRow:Int=0, fc:(file: File, workbook: XSSFWorkbook, sheet:XSSFSheet, lastRowIdx:Int, lastColIdx:Int, rowIdx:Int, row:XSSFRow?, cellIdx:Int, cell:XSSFCell?, cellValue:String?)->Unit) {
+        processRow(inputSrc, sheetIdx,startRow){
+            file, workbook, sheet, lastRowIdx, lastColIdx, rowIdx, row ->
+            if (row!=null) {
+                (0..lastColIdx).forEach {
+                    val cell = row.getCell(it)
+                    val cellValue = getCellValue(cell)
+
+                    fc(file, workbook, sheet, lastRowIdx, lastColIdx, rowIdx, row,it,cell,cellValue)
+                }
+            }
+        }
+    }
+
+    fun maxSheetRowIdx(sheet: XSSFSheet?, colMAX: Int = MAX_COL): Int {
         if (sheet == null) {
             return -1
         }
 
         var lastRowNum = sheet.lastRowNum
 
-        return (lastRowNum downTo 0 step 1).firstOrNull { !isEmptyRow(sheet.getRow(it),colMAX) }
+        return (lastRowNum downTo 0 step 1).firstOrNull { !isEmptyRow(sheet.getRow(it), colMAX) }
                 ?: 0
     }
 
-    fun maxSheetColIdx(sheet: XSSFSheet?,colMAX:Int=MAX_COL):Int {
+    fun maxSheetColIdx(sheet: XSSFSheet?, colMAX: Int = MAX_COL): Int {
         if (sheet == null) {
             return -1
         }
@@ -170,15 +230,16 @@ object ExcelUtil{
             for (j in 0..colMAX) {
                 val cell = row?.getCell(j)
 
-                if (isCellNotEmpty(cell) && j> maxColIdx) {
+                if (isCellNotEmpty(cell) && j > maxColIdx) {
                     maxColIdx = j
                 }
             }
         }
 
-        return  maxColIdx
+        return maxColIdx
     }
-    fun isEmptyRow(row: XSSFRow?,colMAX:Int=MAX_COL): Boolean {
+
+    fun isEmptyRow(row: XSSFRow?, colMAX: Int = MAX_COL): Boolean {
         if (row == null) {
             return true
         }
@@ -189,8 +250,9 @@ object ExcelUtil{
 
     fun isCellNotEmpty(cell: XSSFCell?): Boolean {
         val cellValue = getCellValue(cell)
-        return cellValue?.isNotEmpty()?:false
+        return cellValue?.isNotEmpty() ?: false
     }
+
     fun getCellValue(cell: XSSFCell?): String? {
         if (cell == null) {
             return null
@@ -221,7 +283,7 @@ object ExcelUtil{
 
 
     //一个行范围，列序号sCol中不同的值
-    fun colValueSet(sheet1: XSSFSheet, rowRange:IntRange, sCol: Int): MutableSet<String> {
+    fun colValueSet(sheet1: XSSFSheet, rowRange: IntRange, sCol: Int): MutableSet<String> {
         val splitSet = mutableSetOf<String>()
         (rowRange)
                 .map { sheet1.getRow(it) }
@@ -242,6 +304,13 @@ fun main(args: Array<String>) {
 //    println(InterruptException(ExCode.NO_SUCH_FILE,"啊啊").getMsg())
 //    println(listOf(1, 2, 3, (arrayOf(4, 5, 6))))
 //    println(listOf(1, 2, 3, *(arrayOf(4, 5, 6))))
+    ExcelUtil.process("C:\\Users\\DELL-13\\Desktop\\课程购买.xlsx"){
+        it, workbook, sheet ->  println(sheet)
+    }
 
+    ExcelUtil.processRowCell("C:\\Users\\DELL-13\\Desktop\\课程购买.xlsx",0,1){
+        file, workbook, sheet, lastRowIdx, lastColIdx, rowIdx, row, cellIdx, cell, cellValue ->
+        println("$rowIdx x $cellIdx ,$cellValue")
+    }
 }
 

@@ -1,8 +1,6 @@
 package com.jiangli.finance.excel.business
 
 import com.jiangli.finance.excel.*
-import org.apache.poi.xssf.usermodel.XSSFWorkbook
-import java.io.FileInputStream
 import java.time.LocalDateTime
 
 /**
@@ -21,43 +19,41 @@ fun main(args: Array<String>) {
     val sheetIdx = 0
     val templateSuffix = "-${ LocalDateTime.now().monthValue}月"
 
-//    println(bakDir)
-//    println("$templateSuffix")
+    ExcelUtil.process(inputSrc,sheetIdx){
+        src,workbook,sheet1 ->
+        val namePrefix = FUtil.prefix(src.name)
+        val nameSuffix = FUtil.suffix(src.name)
 
-    val src = FUtil.file(inputSrc)
-    val out = FUtil.dir(outputPath)
-    val namePrefix = FUtil.prefix(src.name)
-    val nameSuffix = FUtil.suffix(src.name)
+        var lastColNum = ExcelUtil.maxSheetColIdx(sheet1)
+        var lastRowNum = ExcelUtil.maxSheetRowIdx(sheet1,lastColNum)
+        sCol-=1
+        sRow-=1
 
-    val workbook = XSSFWorkbook(FileInputStream(src))
-    val sheet1 = workbook.getSheetAt(sheetIdx)
+        if (sCol > lastColNum) {
+            throw InterruptException(ExCode.NUM_COL_OVERFLOW,sCol+1,lastColNum+1)
+        }
+        if (sRow > lastRowNum) {
+            throw InterruptException(ExCode.NUM_ROW_OVERFLOW,sRow+1,lastRowNum+1)
+        }
 
-    var lastColNum = ExcelUtil.maxSheetColIdx(sheet1)
-    var lastRowNum = ExcelUtil.maxSheetRowIdx(sheet1,lastColNum)
-    sCol-=1
-    sRow-=1
+        //meta: []
+        val splitSet = ExcelUtil.colValueSet(sheet1, sRow..lastRowNum, sCol)
 
-    if (sCol > lastColNum) {
-        throw InterruptException(ExCode.NUM_COL_OVERFLOW,sCol+1,lastColNum+1)
-    }
-    if (sRow > lastRowNum) {
-        throw InterruptException(ExCode.NUM_ROW_OVERFLOW,sRow+1,lastRowNum+1)
-    }
+        //generate: []
+        println(splitSet)
 
-    //meta: []
-    val splitSet = ExcelUtil.colValueSet(sheet1, sRow..lastRowNum, sCol)
+        //generate: []
+        println(splitSet)
 
-    //generate: []
-    println(splitSet)
+        splitSet.forEach {
+            val newFileName = "$it$templateSuffix.$nameSuffix"
 
-    splitSet.forEach {
-        val newFileName = "$it$templateSuffix.$nameSuffix"
+            //copy
+            val newFile = ExcelCopier.process(ExcelFileCopier(src,sheetIdx,sRow..lastRowNum,0..lastColNum,outputPath,newFileName))
 
-        //copy
-        val newFile = ExcelCopier.process(ExcelFileCopier(src,sheetIdx,sRow..lastRowNum,0..lastColNum,outputPath,newFileName))
-
-        //filter
-        ExcelFileFilterProcessor.process(ExcelFileFilter(newFile,sheetIdx,sRow..lastRowNum,0..lastColNum,sCol,it))
+            //filter
+            ExcelFileFilterProcessor.process(ExcelFileFilter(newFile,sheetIdx,sRow..lastRowNum,0..lastColNum,sCol,it))
+        }
     }
 
 }
