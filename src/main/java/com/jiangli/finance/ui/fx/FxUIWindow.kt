@@ -24,10 +24,10 @@ class FxUIWindow : Application(){
         mainStage.getIcons().add(Image(src("logo.jpg")))
 
         //default action
-        replaceSceneContent("SplitExcelController.fxml")
+        replaceSceneContent("SplitExcelController.fxml",mainStage)
 //        replaceSceneContent("MainTab.fxml")
 
-
-        primaryStage.show()
+        mainStage.show()
     }
 }
+

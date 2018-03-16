@@ -12,6 +12,7 @@ import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.Pane
 import javafx.stage.DirectoryChooser
 import javafx.stage.FileChooser
+import javafx.stage.Stage
 import java.io.File
 import java.io.InputStream
 import javax.swing.filechooser.FileSystemView
@@ -104,8 +105,8 @@ fun createIntSpinner(defaultVal:Int=1): Spinner<Int> {
 }
 
 @Throws(Exception::class)
- fun replaceSceneContent(fxml: String): Node {
-    val stage = mainStage
+ fun replaceSceneContent(fxml: String,stage: Stage): Node {
+//    val stage = mainStage
 
     val loader = FXMLLoader()
     //        InputStream in = Main.class.getResourceAsStream(fxml);
@@ -146,6 +147,7 @@ fun createIntSpinner(defaultVal:Int=1): Spinner<Int> {
     stage.setScene(scene)
     stage.sizeToScene()
 
-//    return loader.getController<Any>() as Node
-    return page
+
+    return loader.getController<Any>() as Node
+//    return page
 }

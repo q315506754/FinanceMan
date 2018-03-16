@@ -11,6 +11,50 @@ import com.jiangli.finance.excel.ExcelUtil
 
 data class Cmp2DiffRs(val titleLeft:String,val listLeft:Set<String>, val titleRight:String,val listRight:Set<String>, val listCommon:Set<String>)
 
+data class Cmp2DiffRow(var idx:String,var colLeft:String,var colRight:String,var colCommon:String) {
+    constructor():this("","","","")
+}
+
+fun convertCmpRsToTable(rs:Cmp2DiffRs):List<Cmp2DiffRow> {
+    val ret = mutableListOf<Cmp2DiffRow>()
+
+    val listLeft = rs.listLeft.iterator()
+    val listRight = rs.listRight.iterator()
+    val listCommon = rs.listCommon.iterator()
+
+    var idx = 0
+
+    while (true) {
+        var one = Cmp2DiffRow()
+        one.idx = (++idx).toString()
+
+        var next = false
+
+        if (listLeft.hasNext()) {
+            one.colLeft = listLeft.next()
+            next = true
+        }
+        if (listRight.hasNext()) {
+            one.colRight = listRight.next()
+            next = true
+        }
+        if (listCommon.hasNext()) {
+            one.colCommon = listCommon.next()
+            next = true
+        }
+
+        if (!next) {
+            break
+        }
+
+        ret.add(one)
+
+    }
+
+
+    return ret
+}
+
 fun cmpSetList(titles: List<String>,list:List<Set<String>>):List<Cmp2DiffRs> {
     val ret = arrayListOf<Cmp2DiffRs>()
     if (list.size>2) {
@@ -47,6 +91,38 @@ fun cmpSetList(titles: List<String>,list:List<Set<String>>):List<Cmp2DiffRs> {
     return ret
 }
 
+fun cmpExcel(inputSrc: String, sheetIdx: Int, col1: Int, col2: Int, col1Title: String, col2Title: String): List<Cmp2DiffRs> {
+    var sRow = 2
+
+    var cmpCol = arrayListOf(col1,col2)
+    var cmpColVal = arrayListOf<MutableSet<String>>()
+    var cmpColTitle = arrayListOf<String>()
+    cmpCol.forEach {
+        cmpColVal.add(mutableSetOf())
+//        cmpColTitle.add("第${it}列")
+    }
+    cmpColTitle.add(col1Title)
+    cmpColTitle.add(col2Title)
+
+    ExcelUtil.processRowCell(inputSrc,sheetIdx,sRow-1){
+        file, workbook, sheet, lastRowIdx, lastColIdx, rowIdx, row, cellIdx, cell, cellValue ->
+//        println("$rowIdx x $cellIdx ,$cellValue")
+
+        cmpCol.forEachIndexed { idx, v ->
+            if (v == cellIdx) {
+                if (cellValue != null) {
+                    cmpColVal[idx].add(cellValue)
+                }
+            }
+        }
+    }
+
+//    println(cmpColVal)
+
+    val cmpSetList = cmpSetList(cmpColTitle,cmpColVal)
+    return cmpSetList
+}
+
 fun main(args: Array<String>) {
     val inputSrc = "C:\\Users\\DELL-13\\Desktop\\课程购买 - 副本.xlsx"
     var sRow = 2
@@ -63,7 +139,7 @@ fun main(args: Array<String>) {
 
     ExcelUtil.processRowCell(inputSrc,sheetIdx,sRow-1){
         file, workbook, sheet, lastRowIdx, lastColIdx, rowIdx, row, cellIdx, cell, cellValue ->
-        println("$rowIdx x $cellIdx ,$cellValue")
+//        println("$rowIdx x $cellIdx ,$cellValue")
 
         cmpCol.forEachIndexed { idx, v ->
             if (v-1 == cellIdx) {
@@ -77,6 +153,6 @@ fun main(args: Array<String>) {
 //    println(cmpColVal)
 
     val cmpSetList = cmpSetList(cmpColTitle,cmpColVal)
-    println(cmpSetList)
+//    println(cmpSetList)
 
 }

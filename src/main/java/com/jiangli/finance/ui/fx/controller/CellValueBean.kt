@@ -7,8 +7,8 @@ package com.jiangli.finance.ui.fx.controller
  * @date 2018/3/16 9:12
  */
 
-data class CellValueBean(val idx:Int,val title:String) {
+data class CellValueBean(val idx:Int,val title:String,val unit:String) {
     override fun toString(): String {
-        return "第${idx+1}页 "+title
+        return "第${idx+1}${unit} "+title
     }
 }
