@@ -9,8 +9,6 @@ import javafx.scene.layout.Pane
 import javafx.scene.layout.VBox
 
 
-
-
 /**
  *
  *
@@ -81,7 +79,7 @@ class SplitExcelController : BaseController() {
     @FXML
     lateinit internal var colcmp_msgArea: VBox
     @FXML
-    lateinit internal var colcmp_sheetChooseList: ComboBox<String>
+    lateinit internal var colcmp_sheetChooseList: ComboBox<CellValueBean>
     @FXML
     lateinit internal var colcmp_btn: Button
     lateinit internal var colcmp_columnNum: Spinner<Int>
@@ -108,14 +106,10 @@ class SplitExcelController : BaseController() {
             val numberOfSheets = workbook.numberOfSheets
             (0..(numberOfSheets-1)).forEach {
                 val element = workbook.getSheetName(it)
-//                println(element)
-//                colcmp_sheetItems.add(element)
+//                colcmp_sheetChooseList.items.add(element)
+                colcmp_sheetChooseList.items.add(CellValueBean(it,"$element"))
 
-                colcmp_sheetChooseList.items.add(element)
             }
-
-//            println(colcmp_sheetItems)
-
 
         }
 
@@ -142,6 +136,28 @@ class SplitExcelController : BaseController() {
 
     //initial
     override fun processPage(page: Pane){
+        //默认第3个
+        tabPane.selectionModel.select(2)
+
+        colcmp_sheetChooseList.setOnAction {
+            println("s:"+colcmp_sheetChooseList.selectionModel.selectedItem)
+
+        }
+
+//        colcmp_sheetChooseList.cellFactory = Callback<ListView<CellValueBean>?, ListCell<CellValueBean>?> {
+//            object : ListCell<CellValueBean>() {
+//                    init {
+//                    }
+//                override fun updateItem(item: CellValueBean?, empty: Boolean) {
+//                    super.updateItem(item, empty)
+//                    text = item?.title
+//                    println(item)
+//                }
+//
+//            }
+//        }
+
+
 
         /* Integer spinners */
         this.split_columnNum = createIntSpinner(1)
@@ -149,21 +165,6 @@ class SplitExcelController : BaseController() {
 
         split_inputGridPane.add(this.split_columnNum,1,1)
         split_inputGridPane.add(this.split_startRowNum,1,2)
-//        inputGridPane.add(sp,1,2)
-//        val tabPane = page.children[0] as TabPane
-//        val tab = tabPane.tabs[0]
-//        val archorPane = tab.content as Pane
-//        println(tab.content)
-
-//        val items = FXCollections.observableArrayList(
-//                "Single", "Double", "Suite", "Family App")
-
-//        listView.setItems(data);
-//            colcmp_sheetChooseList.setItems(FXCollections.observableArrayList())
-//        colcmp_sheetChooseList.setCellFactory(ComboBoxListCell.forListView(items))
-//        colcmp_sheetChooseList.setCellFactory((ListView<String> l) -> new ColorRectCell());
-//        colcmp_sheetChooseList.setCellFactory(ComboBoxListCell.forListView(items))
-//        colcmp_sheetChooseList.setCellFactory(ComboBoxListCell.forListView(colcmp_sheetItems))
     }
 
 

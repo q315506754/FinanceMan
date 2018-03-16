@@ -14,8 +14,7 @@ import javafx.stage.DirectoryChooser
 import javafx.stage.FileChooser
 import java.io.File
 import java.io.InputStream
-
-
+import javax.swing.filechooser.FileSystemView
 
 
 class CBases
@@ -50,7 +49,8 @@ fun fileChoose(s: String?="选择文件"): File? {
     val fileChooser = FileChooser()
     fileChooser.setTitle(s);
     fileChooser.setInitialDirectory(
-         File(System.getProperty("user.home"))
+//         File(System.getProperty("user.home"))
+          FileSystemView.getFileSystemView() .getHomeDirectory()
     );
     fileChooser.extensionFilters.addAll(
 //            FileChooser.ExtensionFilter("All Images", "*.*"),
@@ -67,7 +67,8 @@ fun dirChoose(s: String?="选择文件夹"): File? {
     val fileChooser = DirectoryChooser()
     fileChooser.setTitle(s);
     fileChooser.setInitialDirectory(
-            File(System.getProperty("user.home"))
+//            File(System.getProperty("user.home"))
+            FileSystemView.getFileSystemView() .getHomeDirectory()
     );
     val f = fileChooser.showDialog(mainStage)
     return f
